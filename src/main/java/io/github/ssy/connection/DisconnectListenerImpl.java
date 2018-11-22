@@ -3,6 +3,7 @@ package io.github.ssy.connection;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.DisconnectListener;
+import io.github.ssy.msg.Broadcast;
 import java.util.Map;
 
 public class DisconnectListenerImpl implements DisconnectListener {
@@ -20,7 +21,16 @@ public class DisconnectListenerImpl implements DisconnectListener {
 
   public void onDisconnect(SocketIOClient socketIOClient) {
     System.out.println(socketIOClient.getSessionId());
+    userMap.remove(socketIOClient.getSessionId());
+
+    Broadcast broadcast=new Broadcast();
+
+    broadcast.setName("SYSTEM");
+
+    broadcast.setMsg("有用户离开群聊");
+
+    broadcast.setType("LEAVE");
     server.getBroadcastOperations().sendEvent("broadcast",
-        "{\"name\":\"SYSTEM\",\"msg\":\"用户 eWfYF67QqI 离开群聊\",\"type\":\"LEAVE\"}");
+        broadcast);
   }
 }

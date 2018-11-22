@@ -39,32 +39,20 @@ public class ChatServer {
 
     final SocketIOServer server = new SocketIOServer(config);
 
+    //设置建立连接过程数据信息
     server.addConnectListener(new ConnectListenerImpl());
-
-    server.addEventListener("chatevent", ChatObject.class, new DataListener<ChatObject>() {
-      @Override
-      public void onData(SocketIOClient client, ChatObject data, AckRequest ackRequest) {
-        // broadcast messages to all clients
-        System.out.println("data:" + data.toString());
-        server.getBroadcastOperations().sendEvent("chatevent", data);
-      }
-    });
 
     server.addEventListener("gm", Gm.class, new DataListener<Gm>() {
       @Override
       public void onData(SocketIOClient client, Gm data, AckRequest ackRequest) {
         // broadcast messages to all clients
         System.out.println("data:" + data.toString());
-
         Broadcast broadcast = new Broadcast();
-
         broadcast.setMsg(data.getMsg());
         broadcast.setId("1222333");
         broadcast.setName("111111");
         broadcast.setAvatar("https://static.oschina.net/uploads/user/1142/2285811_200.jpg");
-
         broadcast.setType("BROADCAST");
-
         //过滤掉自己的内容
         Collection<SocketIOClient> clients = server.getBroadcastOperations().getClients();
         for (SocketIOClient socketIOClient : clients) {
