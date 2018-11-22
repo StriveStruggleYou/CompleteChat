@@ -33,7 +33,7 @@ public class PongTimer implements Runnable {
           }
         }
         Map result = new HashMap();
-        result.put("count", size);
+        result.put("count", users.size());
         result.put("users", users);
         result.put("type", "PONG");
         server.getBroadcastOperations().sendEvent("pong", result);

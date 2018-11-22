@@ -49,10 +49,18 @@ public class ChatServer {
         System.out.println("data:" + data.toString());
         Broadcast broadcast = new Broadcast();
         broadcast.setMsg(data.getMsg());
-        broadcast.setId("1222333");
-        broadcast.setName("111111");
-        broadcast.setAvatar("https://static.oschina.net/uploads/user/1142/2285811_200.jpg");
-        broadcast.setType("BROADCAST");
+        broadcast.setId(client.getSessionId().toString());
+
+        User user = userMap.get(client.getSessionId().toString());
+        if (user != null) {
+          broadcast.setName(user.getUserName());
+          broadcast.setAvatar("https://static.oschina.net/uploads/user/1142/2285811_200.jpg");
+          broadcast.setType("BROADCAST");
+        } else {
+          broadcast.setName(UUID.randomUUID().toString());
+          broadcast.setAvatar("https://static.oschina.net/uploads/user/1142/2285811_200.jpg");
+          broadcast.setType("BROADCAST");
+        }
         //过滤掉自己的内容
         Collection<SocketIOClient> clients = server.getBroadcastOperations().getClients();
         for (SocketIOClient socketIOClient : clients) {
