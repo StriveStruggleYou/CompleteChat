@@ -73,18 +73,14 @@ public class ChatServer {
         System.out.println("data:" + data.toString());
         Broadcast broadcast = new Broadcast();
         broadcast.setMsg("欢迎进入我的联盟");
-        broadcast.setId("1222333");
-        broadcast.setName("111111");
+        broadcast.setId(data.getUserId());
+        broadcast.setName(data.getUserName());
         broadcast.setAvatar("https://static.oschina.net/uploads/user/1142/2285811_200.jpg");
         broadcast.setType("NEW");
         userMap.put(client.getSessionId().toString(), data);
         server.getBroadcastOperations().sendEvent("broadcast", broadcast);
       }
     });
-
-    User data = new User();
-    data.setUserId("1111");
-    userMap.put(UUID.randomUUID().toString(), data);
 
     //设置断开连接的操作
     server.addDisconnectListener(new DisconnectListenerImpl(server, userMap));
@@ -94,12 +90,15 @@ public class ChatServer {
     time.start();
 
     //42["broadcast",{"name":"SYSTEM","msg":"用户 eWfYF67QqI 离开群聊","type":"LEAVE"}]
+    Thread serverThread=new Thread(new Runnable() {
+      @Override
+      public void run() {
+        server.start();
+      }
+    });
 
-    server.start();
+    serverThread.start();
 
-    Thread.sleep(Integer.MAX_VALUE);
-
-    server.stop();
   }
 
 
