@@ -61,13 +61,25 @@ public class ChatServer {
           broadcast.setAvatar("https://static.oschina.net/uploads/user/1142/2285811_200.jpg");
           broadcast.setType("BROADCAST");
         }
-        //过滤掉自己的内容
-        Collection<SocketIOClient> clients = server.getBroadcastOperations().getClients();
-        for (SocketIOClient socketIOClient : clients) {
-          if (socketIOClient.getSessionId() != client.getSessionId()) {
-            socketIOClient.sendEvent("broadcast", broadcast);
+        //群聊
+        if (data.getTargetId().equals("group")) {
+          //过滤掉自己的内容
+          Collection<SocketIOClient> clients = server.getBroadcastOperations().getClients();
+          for (SocketIOClient socketIOClient : clients) {
+            if (socketIOClient.getSessionId() != client.getSessionId()) {
+              socketIOClient.sendEvent("broadcast", broadcast);
+            }
+          }
+        } else {
+          //进入单聊，下次兼容这个人下线了的场景
+          Collection<SocketIOClient> clients = server.getBroadcastOperations().getClients();
+          for (SocketIOClient socketIOClient : clients) {
+            if (socketIOClient.getSessionId().toString().equals(data.getTargetId())) {
+              socketIOClient.sendEvent("broadcast", broadcast);
+            }
           }
         }
+
       }
     });
 
