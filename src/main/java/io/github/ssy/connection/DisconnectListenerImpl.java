@@ -24,13 +24,9 @@ public class DisconnectListenerImpl implements DisconnectListener {
     userMap.remove(socketIOClient.getSessionId());
 
     Broadcast broadcast = new Broadcast();
-
     broadcast.setName("SYSTEM");
-
     broadcast.setMsg("有用户离开群聊");
-
     broadcast.setAvatar("https://static.oschina.net/uploads/user/1142/2285811_200.jpg");
-
     broadcast.setType("LEAVE");
     server.getBroadcastOperations().sendEvent("broadcast",
         broadcast);
