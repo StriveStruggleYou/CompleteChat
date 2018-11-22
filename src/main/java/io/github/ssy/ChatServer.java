@@ -12,18 +12,28 @@ import io.github.ssy.msg.ChatObject;
 import io.github.ssy.msg.Gm;
 import io.github.ssy.msg.User;
 import io.github.ssy.timer.PongTimer;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
 
 public class ChatServer {
 
-  public static void main(String[] args) throws InterruptedException {
+  public static void main(String[] args) throws Exception {
+
+    Properties properties = new Properties();
+    InputStream in = ChatServer.class.getClassLoader().getResourceAsStream("conf.properties");
+    properties.load(in);
+    //获取key对应的value值
+    String hostName = properties.getProperty("hostname");
+
+    String port = properties.getProperty("port");
 
     Configuration config = new Configuration();
-    config.setHostname("127.0.0.1");
-    config.setPort(8080);
+    config.setHostname(hostName);
+    config.setPort(Integer.valueOf(port));
 
     final Map<String, User> userMap = new HashMap<String, User>();
 
@@ -90,7 +100,7 @@ public class ChatServer {
     time.start();
 
     //42["broadcast",{"name":"SYSTEM","msg":"用户 eWfYF67QqI 离开群聊","type":"LEAVE"}]
-    Thread serverThread=new Thread(new Runnable() {
+    Thread serverThread = new Thread(new Runnable() {
       @Override
       public void run() {
         server.start();
