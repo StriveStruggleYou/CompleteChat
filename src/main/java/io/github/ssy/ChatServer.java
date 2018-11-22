@@ -75,6 +75,8 @@ public class ChatServer {
         broadcast.setName(data.getUserName());
         broadcast.setAvatar("https://static.oschina.net/uploads/user/1142/2285811_200.jpg");
         broadcast.setType("NEW");
+        //设置基础数据信息
+        data.setUserAvatar("https://static.oschina.net/uploads/user/1142/2285811_200.jpg");
         userMap.put(client.getSessionId().toString(), data);
         server.getBroadcastOperations().sendEvent("broadcast", broadcast);
       }
