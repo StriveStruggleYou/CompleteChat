@@ -21,8 +21,7 @@ public class DisconnectListenerImpl implements DisconnectListener {
 
   public void onDisconnect(SocketIOClient socketIOClient) {
     System.out.println(socketIOClient.getSessionId());
-    userMap.remove(socketIOClient.getSessionId());
-
+    userMap.remove(socketIOClient.getSessionId().toString());
     Broadcast broadcast = new Broadcast();
     broadcast.setName("SYSTEM");
     broadcast.setMsg("有用户离开群聊");
