@@ -10,6 +10,7 @@ import io.github.ssy.connection.DisconnectListenerImpl;
 import io.github.ssy.msg.Broadcast;
 import io.github.ssy.msg.ChatObject;
 import io.github.ssy.msg.Gm;
+import io.github.ssy.msg.Pm;
 import io.github.ssy.msg.User;
 import io.github.ssy.timer.PongTimer;
 import java.io.InputStream;
@@ -71,6 +72,7 @@ public class ChatServer {
             }
           }
         } else {
+          System.out.println("nihao");
           //进入单聊，下次兼容这个人下线了的场景
           Collection<SocketIOClient> clients = server.getBroadcastOperations().getClients();
           for (SocketIOClient socketIOClient : clients) {
@@ -80,6 +82,36 @@ public class ChatServer {
           }
         }
 
+      }
+    });
+
+    server.addEventListener("pm", Pm.class, new DataListener<Pm>() {
+      @Override
+      public void onData(SocketIOClient client, Pm data, AckRequest ackRequest) {
+        // broadcast messages to all clients
+        System.out.println("data:" + data.toString());
+        Broadcast broadcast = new Broadcast();
+        broadcast.setMsg(data.getMsg());
+        broadcast.setId(client.getSessionId().toString());
+
+        User user = userMap.get(client.getSessionId().toString());
+        if (user != null) {
+          broadcast.setName(user.getUserName());
+          broadcast.setAvatar("https://static.oschina.net/uploads/user/1142/2285811_200.jpg");
+          broadcast.setType("pm");
+        } else {
+          broadcast.setName(UUID.randomUUID().toString());
+          broadcast.setAvatar("https://static.oschina.net/uploads/user/1142/2285811_200.jpg");
+          broadcast.setType("pm");
+        }
+        //群聊
+        //进入单聊，下次兼容这个人下线了的场景
+        Collection<SocketIOClient> clients = server.getBroadcastOperations().getClients();
+        for (SocketIOClient socketIOClient : clients) {
+          if (socketIOClient.getSessionId().toString().equals(data.getTargetId())) {
+            socketIOClient.sendEvent("pm", broadcast);
+          }
+        }
       }
     });
 
