@@ -9,3 +9,6 @@
 
 
 ### 启动脚本在文件目录下,执行 sh start.sh 就可以了。配置文件里面，可以修改指定的启动端口和绑定的IP。
+
+
+### 前端项目使用: https://github.com/barretlee/blogChat,后端简单的自己实现。只是为了了解，websocket信息。
